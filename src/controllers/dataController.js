@@ -1,6 +1,7 @@
 const Task = require('../models/data');
 const { parseCSV, exportToCSV } = require('../utils/csvHandler');
 
+
 const getTasks = async (req, res) => {
     try {
         const tasks = await Task.find({ createdBy: req.user.id });
@@ -43,7 +44,7 @@ const deleteTask = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
         if (task && task.createdBy.toString() === req.user.id) {
-            await task.remove();
+            await Task.deleteOne({ _id: task._id });
             res.json({ message: 'Task removed' });
         } else {
             res.status(404).json({ message: 'Task not found or unauthorized' });
@@ -52,6 +53,7 @@ const deleteTask = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 const importTasks = async (req, res) => {
     try {
